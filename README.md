@@ -1,36 +1,61 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# วิธีการรันโปรเจกต์
 
-## Getting Started
+1. ติดตั้ง dependencies
+   ```bash
+   npm install
+   # หรือ
+   yarn install
+   # หรือ
+   pnpm install
+   ```
 
-First, run the development server:
+2. สร้างไฟล์ .env.local (ถ้าต้องการเชื่อมต่อ backend จริง)
+   ```env
+   NEXT_PUBLIC_API_URL=http://localhost:5000  # ตัวอย่าง URL backend
+   ```
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+3. รันเซิร์ฟเวอร์ development
+   ```bash
+   npm run dev
+   # หรือ
+   yarn dev
+   # หรือ
+   pnpm dev
+   ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+4. เปิดเบราว์เซอร์ไปที่ [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
+# ระบบจองคิว (Queue Booking System)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+ระบบนี้เป็นตัวอย่างแอป Next.js สำหรับจองคิวออนไลน์ พร้อมระบบ Login (demo)
 
-## Learn More
+## โครงสร้างหลัก
 
-To learn more about Next.js, take a look at the following resources:
+- หน้า Login: `/login` (ไฟล์: `app/login/page.tsx`)
+- หน้าแสดง/จองคิว: `/book` (ไฟล์: `app/book/page.tsx`)
+- API Login: `app/api/login/route.ts` (ตรวจสอบ username/password)
+- API Queue: `app/api/queue/route.ts` (บันทึก/ดึงข้อมูลคิว)
+- ฟังก์ชันเรียก API: `app/service/book/book.ts`, `app/service/book/useBooking.tsx`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## วิธีการทำงาน
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. **เข้าสู่ระบบ**
 
-## Deploy on Vercel
+   - ผู้ใช้กรอก username/password ที่หน้า `/login`
+   - ระบบจะส่งข้อมูลไปที่ API `/api/login` เพื่อตรวจสอบ
+   - ถ้าสำเร็จ จะ redirect ไปหน้า `/book`
+2. **จองคิว**
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+   - ผู้ใช้เลือกบริการ, เวลาเริ่มต้น, เวลาสิ้นสุด ที่หน้า `/book`
+   - เมื่อกดจอง ระบบจะเรียก API `/Booking` (backend) ผ่านฟังก์ชัน `CreateBooking`
+   - ถ้าสำเร็จจะแสดงข้อความยืนยัน ถ้าไม่สำเร็จจะแสดง error
+3. **API/Backend**
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+   - ถ้าเชื่อมต่อ backend จริง ให้แก้ไข baseURL ใน `app/axios-instance.ts` (ใช้ env `NEXT_PUBLIC_API_URL`)
+
+## หมายเหตุ
+
+- ระบบนี้เหมาะสำหรับ demo หรือ prototype เท่านั้น ยังไม่มีระบบ session/cookie ที่ปลอดภัยจริง
+
+---
